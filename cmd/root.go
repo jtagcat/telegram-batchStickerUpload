@@ -73,9 +73,11 @@ var rootCmd = &cobra.Command{
 		updates := bot.GetUpdatesChan(update)
 		var cid int64
 		for u := range updates {
-			cid = u.Message.Chat.ID
-			log.Info().Str("sending_to", u.Message.Chat.UserName).Msg("Sending raw stickers…")
-			break
+			if u.Message != nil {
+				cid = u.Message.Chat.ID
+				log.Info().Str("sending_to", u.Message.Chat.UserName).Msg("Sending raw stickers…")
+				break
+			}
 		}
 
 		for _, f := range files {
