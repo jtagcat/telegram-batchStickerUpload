@@ -1,5 +1,6 @@
-# telegram-batchStickerUpload
+This is slapped and bodged together, don't expect anything.
 
+## howto
 1. Prepare files:
    - Anything that [@Stickers](https://t.me/stickers) usually takes. Largest side 512, webp is good.
    - Files will be sent added in alphabetical order
