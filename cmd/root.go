@@ -9,8 +9,10 @@ import (
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	simpleretry "github.com/jtagcat/simpleretry/pkg"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"k8s.io/apimachinery/pkg/util/wait"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -81,16 +83,35 @@ var rootCmd = &cobra.Command{
 		}
 
 		for _, f := range files {
-			file, err := os.ReadFile(f.path)
-			if err != nil {
-				log.Fatal().Err(err).Msg("error opening file")
+			backoff := wait.Backoff{
+				Duration: time.Second,
+				Steps:    5,
+				Factor:   1.5,
 			}
-			bot.Send(tgbotapi.NewDocument(cid, tgbotapi.FileBytes{
-				Name:  path.Base(f.path),
-				Bytes: file,
-			}))
+			serr := simpleretry.OnError(backoff, func() (bool, error) {
+				file, err := os.ReadFile(f.path)
+				if err != nil {
+					return false, err
+				}
 
-			bot.Send(tgbotapi.NewMessage(cid, f.emoji))
+				_, err = bot.Send(tgbotapi.NewDocument(cid, tgbotapi.FileBytes{
+					Name:  path.Base(f.path),
+					Bytes: file,
+				}))
+				return true, err
+			})
+			if serr != nil {
+				log.Error().Err(serr).Msg("error sending file")
+			}
+
+			serr = simpleretry.OnError(backoff, func() (bool, error) {
+				_, err := bot.Send(tgbotapi.NewMessage(cid, f.emoji))
+				return true, err
+			})
+			if serr != nil {
+				log.Error().Err(serr).Msg("error sending emoji")
+			}
+
 			time.Sleep(200 * time.Millisecond) // else stuff can get out of order
 		}
 	},
