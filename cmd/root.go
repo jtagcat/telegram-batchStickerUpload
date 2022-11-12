@@ -8,7 +8,7 @@ import (
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/jtagcat/simple"
+	"github.com/jtagcat/util/retry"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -87,7 +87,7 @@ var rootCmd = &cobra.Command{
 				Steps:    5,
 				Factor:   1.5,
 			}
-			serr := simple.RetryOnError(backoff, func() (bool, error) {
+			serr := retry.OnError(backoff, func() (bool, error) {
 				file, err := os.ReadFile(f.path)
 				if err != nil {
 					return false, err
@@ -103,7 +103,7 @@ var rootCmd = &cobra.Command{
 				log.Error().Err(serr).Msg("error sending file")
 			}
 
-			serr = simple.RetryOnError(backoff, func() (bool, error) {
+			serr = retry.OnError(backoff, func() (bool, error) {
 				_, err := bot.Send(tgbotapi.NewMessage(cid, f.emoji))
 				return true, err
 			})
