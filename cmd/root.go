@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -36,7 +35,7 @@ var rootCmd = &cobra.Command{
 		}
 		inDir := args[0]
 
-		dirList, err := ioutil.ReadDir(inDir)
+		dirList, err := os.ReadDir(inDir)
 		if err != nil {
 			log.Fatal().Err(err).Msg("Failed to read directory")
 		}

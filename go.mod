@@ -7,7 +7,7 @@ require (
 	github.com/jtagcat/simple v0.0.0-20221029192732-bc769806e535
 	github.com/rs/zerolog v1.28.0
 	github.com/spf13/cobra v1.6.1
-	k8s.io/apimachinery v0.25.3
+	k8s.io/apimachinery v0.25.4
 )
 
 require (
@@ -16,7 +16,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/sys v0.1.0 // indirect
+	golang.org/x/sys v0.2.0 // indirect
 	k8s.io/klog/v2 v2.80.1 // indirect
-	k8s.io/utils v0.0.0-20221012122500-cfd413dd9e85 // indirect
+	k8s.io/utils v0.0.0-20221108210102-8e77b1f39fe2 // indirect
 )
